@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+
+  db:
+    image: mysql:8.0.2
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./sql:/docker-entrypoint-initdb.d" # init table sql
+      - "./sql/my.conf:/etc/mysql/conf.d/config-file.cnf" # mysql config
+    #   - "./data:/var/lib/mysql:rw" # backup data to host fs
+
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    # command: npm start # run app
+    command: npm run dev # hot reload dev
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    # hot reload dev volumes
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
