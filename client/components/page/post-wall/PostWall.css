@@ -1,0 +1,10 @@
+.post-avatar-container {
+    vertical-align: top;
+    height: 50px;
+    width: 50px;
+}
+
+.post-avatar {
+    height: 100%;
+    width: 100%;
+}

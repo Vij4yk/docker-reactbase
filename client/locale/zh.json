@@ -1,0 +1,18 @@
+{
+    "register": "注册",
+    "sigin": "登录",
+    "signout": "注销",
+
+    "title": "Mini Blog",
+    "subtitle": "分享你的天才想法",
+
+    "unique_name_tag_label": "帐号",
+    "unique_name_tag_placeholder": "输入帐号",
+    "email_label": "电子邮件",
+    "email_placeholder": "输入电子邮件",
+    "password_label": "密码",
+    "password_placeholder": "输入密码",
+    "repeat_password_label": "确认密码",
+    "repeat_password_placeholder": "重复一次密码",
+    "submit": "提交"
+}

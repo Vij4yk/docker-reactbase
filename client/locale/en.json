@@ -1,0 +1,18 @@
+{
+    "register": "Register",
+    "sigin": "Sign In",
+    "signout": "Sign Out",
+
+    "title": "Mini Blog",
+    "subtitle": "Share your brilliant ideas with others",
+
+    "unique_name_tag_label": "Unique Name",
+    "unique_name_tag_placeholder": "Enter your ID",
+    "email_label": "Email Address",
+    "email_placeholder": "Enter your email",
+    "password_label": "Password",
+    "password_placeholder": "Enter your password",
+    "repeat_password_label": "Comfirm Password",
+    "repeat_password_placeholder": "Repeat your password",
+    "submit": "Submit"
+}

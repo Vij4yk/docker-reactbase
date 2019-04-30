@@ -1,0 +1,15 @@
+#header {
+    padding-top: 80px;
+    padding-bottom: 40px;
+}
+
+#title {
+    color: white;
+    font-size: 50px;
+}
+
+#subtitle {
+    padding-left: 30px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color:rgb(148, 175, 202);
+}
