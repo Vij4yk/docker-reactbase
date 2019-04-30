@@ -9,6 +9,8 @@ const app = express()
 
 app.use(webpackMiddle(webpack(webpackConfig)))
 
+app.use('/u', require('./app/router/UserRouter'))
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../index.html'))
 })
