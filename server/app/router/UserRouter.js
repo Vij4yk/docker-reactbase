@@ -79,82 +79,83 @@ const getAvatar = (request, response) => {
     })
 }
 
+const validationRegistrationForm = async (form) => {
+    const errors = {}
+
+    if (!form.unique_name_tag) {
+        errors.unique_name_tag = "unique_name_tag is required"
+    } else if (!Validation.validateUserName(form.unique_name_tag)) {
+        errors.unique_name_tag = "unique_name_tag must at least container 5 characters and includes only [digit, alphabet, -]"
+    }
+
+    if (!form.password) {
+        errors.password = "password is required"
+    }
+
+    if(form.display_name && !Validation.validateUserName(form.display_name)) {
+        errors.display_name = "display_name must at least container 5 characters and includes only [digit, alphabet, -]"
+    }
+
+    const users = await UserService.getUserByUniqueTag(form.unique_name_tag)
+        .catch(err => {
+            Log.err(err)
+        })
+    // unique tag check
+    if (users.length != 0) {
+        errors.unique_name_tag = "unique_name_tag already exist"
+    }
+
+    if (form.email && !Validation.validateEmail(form.email)) {
+        errors.email = "invalid email"
+    }
+
+    if (form.avatar && !Validation.validateImage(form.avatar = form.avatar.buffer)) {
+        errors.avatar = "unsupported image type"
+    }
+
+    return Object.keys(errors).length > 0 ? errors : null
+} 
+
 // process form-data, Content-Type: multipart/form-data
 const registerUser = async (request, response) => {
     let body = request.body
     const user = {
         unique_name_tag: body.unique_name_tag,
-        display_name: body.display_name || body.unique_name_tag,
+        display_name: body.display_name || null,
         email: body.email || null,
         description: body.description || null,
         avatar: request.file || null,
         password: body.password
     }
 
-    // required fields
-    if (!user.unique_name_tag || ! user.password) {
-        response.send({
-            error: "require fields: [unique_name_tag, password]"
-        })
-        return
-    }
+    validationRegistrationForm(user)
+    .then(err => {
+        if (err) {
+            response.send({errors: err})
+        } else {
+            if (!user.display_name) {
+                user.display_name = user.unique_name_tag
+            }
+            if (user.description) {
+                user.description = Helper.escapeHtml(user.description)
+            }
+            user.password = Helper.hash(user.password)
 
-    if (!Validation.validateUserName(user.unique_name_tag) ||
-        !Validation.validateUserName(user.display_name)) {
-        response.send({
-            error: "invalid unique_name_tag / display_name"
-        })
-        return   
-    }
-
-    const users = await UserService.getUserByUniqueTag(user.unique_name_tag)
-        .catch(err => {
-            response.send({
-                error: 'invalid unique_name_tag'
+            // insert into db
+            UserService.StoreUser(user)
+            .then(() => {
+                response.send({
+                    result: 'OK'
+                })
             })
-            Log.err(err)
-        })
-    // unique tag check
-    if (users.length != 0) {
-        response.send({
-            error: "unique_name_tag already exist"
-        })
-        return
-    }
-
-    // email validation
-    if (user.email && !Validation.validateEmail(user.email)) {
-        response.send({
-            error: "invalid email"
-        })
-        return   
-    }
-
-    // html escape description
-    if (user.description) {
-        user.description = Helper.escapeHtml(user.description)
-    }
-
-    // check avatar file
-    if (user.avatar && !Validation.validateImage(user.avatar = user.avatar.buffer)) {
-        response.send({
-            error: "unsupported image type"
-        })
-        return
-    }
-    
-    // hash password
-    user.password = Helper.hash(user.password)
-
-    // insert into db
-    UserService.StoreUser(user)
-    .then(() => {
-        response.sendStatus(200)
+            .catch((err) => {
+                response.sendStatus(500)
+                Log.err(err)
+            })
+        }
     })
     .catch((err) => {
-        response.send({
-            error: "upload profile failed"
-        })
+        response.sendStatus(500)
         Log.err(err)
     })
 }

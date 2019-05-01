@@ -10,5 +10,6 @@
     "email_label": "电子邮件",
     "password_label": "密码",
     "password_confirmation_label": "确认密码",
+    "password_not_match_error": "密码不一致",
     "submit": "提交"
 }

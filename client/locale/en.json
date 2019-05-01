@@ -10,5 +10,6 @@
     "email_label": "Email Address",
     "password_label": "Password",
     "password_confirmation_label": "Comfirm Password",
+    "password_not_match_error": "password not match",
     "submit": "Submit"
 }
