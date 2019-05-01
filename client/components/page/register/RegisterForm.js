@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import { Redirect } from 'react-router-dom'
 
 import FormGroup from '../../share/FormGroup'
 
@@ -18,7 +19,21 @@ class RegisterForm extends React.Component {
 
         this.onChange = this.onChange.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
+        this.onUsernameChange = this.onUsernameChange.bind(this)
         this.onPwdConfirmationChange = this.onPwdConfirmationChange.bind(this)
+    }
+
+    onUsernameChange(e) {
+        this.onChange(e)
+        let err = ''
+
+        if (!/^[A-z0-9-]+$/.test(e.target.value)) {
+            err = this.props.locale.invalid_character
+        } else if (!/^.{4,64}$/.test(e.target.value)) {
+            err = this.props.locale.name_too_short
+        } 
+
+        this.setState({ errors: {...this.state.errors, unique_name_tag: err} })
     }
 
     onChange(e) {
@@ -38,13 +53,19 @@ class RegisterForm extends React.Component {
     onSubmit(e) {
         e.preventDefault()
         
+        const errorExist = Object.keys(this.state.errors).some((key) => {
+            return this.state.errors[key]
+        })
+
+        if (!this.state.unique_name_tag || !this.state.password || errorExist) return
+
         axios.post('/api/u/register', this.state)
         .then(res => {
             let errs = res.data.errors
             if(errs) {
                 this.setState({errors: errs})
             } else {
-                // login
+                // @todo login
             }
         })
         .catch(console.log)
@@ -53,6 +74,10 @@ class RegisterForm extends React.Component {
     // description VARCHAR(512),
     // avatar LONGBLOB,
     render() {
+        if (false) { // @todo check user state
+            return (<Redirect to='/' />) // user already login
+        }
+
         const locale = this.props.locale
         return (
             <form onSubmit={this.onSubmit}> 
@@ -60,7 +85,7 @@ class RegisterForm extends React.Component {
                     name="unique_name_tag" 
                     value={this.state.unique_name_tag}
                     error={this.state.errors.unique_name_tag} 
-                    onChange={this.onChange} 
+                    onChange={this.onUsernameChange} 
                     label={locale.unique_name_tag_label} />
                 <FormGroup 
                     name="email" 

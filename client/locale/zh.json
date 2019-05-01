@@ -7,6 +7,8 @@
     "subtitle": "分享你的天才想法",
 
     "unique_name_tag_label": "帐号",
+    "invalid_character": "无效字符",
+    "name_too_short": "帐号名字太短",
     "email_label": "电子邮件",
     "password_label": "密码",
     "password_confirmation_label": "确认密码",

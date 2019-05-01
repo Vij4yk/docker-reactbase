@@ -8,6 +8,7 @@ export default class FormGroup extends React.Component {
             <div className="form-group">
                 <label htmlFor={this.props.id}>{this.props.label}</label>
                 <input className="form-control"
+                    autoComplete="off"
                     type={this.props.type}  
                     id={this.props.id} 
                     value={this.props.value}

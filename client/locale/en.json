@@ -7,6 +7,8 @@
     "subtitle": "Share your brilliant ideas with others",
 
     "unique_name_tag_label": "Unique Name",
+    "invalid_character": "invalid character",
+    "name_too_short": "id is too short",
     "email_label": "Email Address",
     "password_label": "Password",
     "password_confirmation_label": "Comfirm Password",
