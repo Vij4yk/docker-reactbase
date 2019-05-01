@@ -15,7 +15,7 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE 3000
+EXPOSE 8080
 # CMD [ "npm", "start" ]
 
 #https://nodejs.org/en/docs/guides/nodejs-docker-webapp/

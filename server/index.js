@@ -11,8 +11,8 @@ app.use(webpackMiddle(webpack(webpackConfig)))
 
 app.use('/u', require('./app/router/UserRouter'))
 
-app.get('/', (req, res) => {
+app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, '../index.html'))
 })
 
-app.listen(3000, '0.0.0.0', () => console.log('server started'))
+app.listen(8080, '0.0.0.0', () => console.log('server started'))

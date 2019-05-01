@@ -24,7 +24,7 @@ services:
     depends_on:
       - mysql-db
     ports:
-      - "3000:3000"
+      - "8080:8080"
     environment:
       - DB_HOST=mysql-db
       - DB_NAME=${MYSQL_DATABASE}
