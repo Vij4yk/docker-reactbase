@@ -10,30 +10,19 @@ import PostWall from './page/post-wall/PostWall'
 import RegisterForm from './page/register/RegisterForm'
 import SigninForm from './page/signin/SigninForm'
 import Footer from './footer/Footer'
-import { FETCH_LOCAL, fetchLocale } from './redux/LocaleAction'
+import RootReducer from './redux/RootReducer'
+import { localeAction } from './redux/Localization'
 
 import './App.css'
 
-const initialState = {
-    locale: {}
-}
-
-const reducer = (state = initialState, action) => {
-    // console.log('reducer', state, action)
-    switch (action.type) {
-        case FETCH_LOCAL: return {...state, locale: action.locale}
-        default: return state
-    }
-}
-
 const store = createStore(
-    reducer,
+    RootReducer,
     applyMiddleware(thunk)
 )
 
 export default class App extends React.Component {
     componentWillMount() {
-        store.dispatch(fetchLocale(navigator.language || navigator.userLanguage))
+        store.dispatch(localeAction(navigator.language || navigator.userLanguage))
     }
 
     render() {

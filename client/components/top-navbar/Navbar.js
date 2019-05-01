@@ -26,6 +26,6 @@ class Navbar extends React.Component {
 // export default 
 export default connect(
     state => ({
-        locale: state.locale
+        locale: state.LocaleReducer.locale
     })
 )(Navbar)

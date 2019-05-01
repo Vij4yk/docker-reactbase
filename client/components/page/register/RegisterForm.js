@@ -119,6 +119,6 @@ class RegisterForm extends React.Component {
 // export default 
 export default connect(
     state => ({
-        locale: state.locale
+        locale: state.LocaleReducer.locale
     })
 )(RegisterForm)

@@ -38,6 +38,6 @@ class SigninForm extends React.Component {
 
 export default connect(
     state => ({
-        locale: state.locale
+        locale: state.LocaleReducer.locale
     })
 )(SigninForm)
