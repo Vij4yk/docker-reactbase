@@ -1,5 +1,6 @@
 #top-navbar {
     background: url('../../img/dust_texture.jpg');
+    vertical-align: middle;
     position: fixed;
     top: 0;
     left: 0;
@@ -8,4 +9,8 @@
     height: 50px;
     
     color: white;
+}
+
+#top-navbar > div , #top-navbar img {
+    height: 50px;
 }

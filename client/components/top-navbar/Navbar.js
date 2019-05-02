@@ -35,8 +35,29 @@ class Navbar extends React.Component {
         } else {
             return (
                 <div id='top-navbar'>
-                    <div className='pull-right pr-3'>
-                        <FontAwesomeBtn onClick={this.signout.bind(this)} fontAwesome='fa fa-sign-out ' text={'\u00a0' + this.props.locale.signout} />
+                    <div className="row">
+                    <div className="col-4">
+                        <Link to='/' className="deco-none">
+                            <img className="pl-3" src={this.props.user.avatar} alt="avatar" />
+                            <b className="h5 ml-3">{this.props.user.display_name}</b>
+                        </Link>
+                    </div>  
+                    <div className="col-4 content-center">
+                        <Link to="/" className="deco-none">
+                            <FontAwesomeBtn
+                                fontAwesome='fa-2x fa fa-file mt-2' />
+                        </Link>
+                    </div>
+                    <div className="col-4">
+                        <div className='pull-right pr-3'>
+                            <Link to="/" className="deco-none">
+                                <FontAwesomeBtn 
+                                    onClick={this.signout.bind(this)} 
+                                    fontAwesome='fa fa-sign-out ' 
+                                    text={'\u00a0' + this.props.locale.signout} />
+                            </Link>
+                        </div>
+                    </div>
                     </div>
                 </div>
             )

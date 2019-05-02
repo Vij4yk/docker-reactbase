@@ -16,7 +16,12 @@ form {
     text-decoration: inherit;
 }
 
-.deco-none:hover {
+/* .deco-none:hover {
     color: inherit;
     text-decoration: inherit;
+} */
+
+.content-center {
+    align-content: center;
+    text-align: center;
 }

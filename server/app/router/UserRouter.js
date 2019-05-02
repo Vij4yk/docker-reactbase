@@ -193,7 +193,7 @@ const signin = (req, res) => {
                     display_name: user.display_name,
                     create_at: user.create_at,
                     description: user.description,
-                    avatar: user.avatar,
+                    avatar: `http://${req.get('Host')}/api/u/${user.unique_name_tag}/avatar`
                 }, jwtSecret)
                 res.json(token)
             }
