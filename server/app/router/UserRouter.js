@@ -2,6 +2,7 @@ import express from 'express'
 import fs from 'fs'
 import path from 'path'
 import multer from 'multer'
+import jwt from 'jsonwebtoken'
 
 import UserService from '../service/UserService'
 import Log from '../service/Log'
@@ -42,6 +43,7 @@ const getUser = (request, response) => {
     })
 }
 
+let jwtSecret; // load from .env
 let noAvatarJpg; // use this image if the user has no avatar uploaded
 (function() {
     fs.readFile(path.resolve(__dirname, '../../img/question_mark.jpg'), (err, data) => {
@@ -49,6 +51,20 @@ let noAvatarJpg; // use this image if the user has no avatar uploaded
             Log.err('no-avatart.jpg path not exist')
         }
         noAvatarJpg = data
+    })
+
+    fs.readFile(path.resolve(__dirname, '../../../.env'), 'utf8', (err, data) => {
+        if (err) {
+            throw 'can not load mysql .env data'
+        }
+        
+        data.split('\n').forEach(str => {
+            // MYSQL_ROOT_PASSWORD=xxx 
+            if (str.includes('JWT_SECRET=')) {
+                jwtSecret = str.split('=')[1]
+            }
+        })
+        
     })
 })()
 
@@ -117,7 +133,7 @@ const validationRegistrationForm = async (form) => {
 } 
 
 // process form-data, Content-Type: multipart/form-data
-const registerUser = async (request, response) => {
+const registerUser = (request, response) => {
     let body = request.body
     const user = {
         unique_name_tag: body.unique_name_tag,
@@ -160,8 +176,44 @@ const registerUser = async (request, response) => {
     })
 }
 
-router.get('/tag/:tag', getUser)
-router.get('/tag/:tag/avatar', getAvatar)
+const signin = (req, res) => {
+    const { unique_name_tag, password } = req.body
+    
+    UserService.getUserByUniqueTag(unique_name_tag)
+    .then(users => {
+        const user = users[0]
+        if (user) {
+            if (Helper.hash(password) != user.password) {
+                res.send({
+                    errors: {password: 'incorrect passwords'}
+                })
+            } else {
+                const token = jwt.sign({
+                    unique_name_tag: user.unique_name_tag,
+                    display_name: user.display_name,
+                    create_at: user.create_at,
+                    description: user.description,
+                    avatar: user.avatar,
+                }, jwtSecret)
+                res.json(token)
+            }
+        } else {
+            res.send({
+                errors: {unique_name_tag: 'user does not exist'}
+            })
+        }
+    })
+    .catch(err => {
+        res.send({
+            errors: {unique_name_tag: 'user does not exist'}
+        })
+        Log.err(err)
+    })
+}
+
+router.get('/:tag', getUser)
+router.get('/:tag/avatar', getAvatar)
 router.post('/register', upload.single('avatar'), registerUser)
+router.post('/signin', signin)
 
 module.exports = router

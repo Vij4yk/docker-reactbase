@@ -14,7 +14,8 @@ class RegisterForm extends React.Component {
             email: '',
             password: '',
             password_confirmation: '',
-            errors: {}
+            errors: {},
+            loading: false,
         }
 
         this.onChange = this.onChange.bind(this)
@@ -59,6 +60,7 @@ class RegisterForm extends React.Component {
 
         if (!this.state.unique_name_tag || !this.state.password || errorExist) return
 
+        this.setState({loading: true})
         axios.post('/api/u/register', this.state)
         .then(res => {
             let errs = res.data.errors
@@ -69,12 +71,13 @@ class RegisterForm extends React.Component {
             }
         })
         .catch(console.log)
+        this.setState({loading: false})
     }
 
     // description VARCHAR(512),
     // avatar LONGBLOB,
     render() {
-        if (false) { // @todo check user state
+        if (this.props.authed) {
             return (<Redirect to='/' />) // user already login
         }
 
@@ -108,7 +111,7 @@ class RegisterForm extends React.Component {
                     onChange={this.onPwdConfirmationChange} 
                     label={locale.password_confirmation_label}  
                     type="password"/>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" disabled={this.state.loading} className="btn btn-primary">
                     {locale.submit}
                 </button>
             </form>
@@ -119,6 +122,7 @@ class RegisterForm extends React.Component {
 // export default 
 export default connect(
     state => ({
-        locale: state.LocaleReducer.locale
+        locale: state.LocaleReducer.locale,
+        authed: state.SetUserReducer.authed
     })
 )(RegisterForm)

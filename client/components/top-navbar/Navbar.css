@@ -1,10 +1,11 @@
 #top-navbar {
+    background: url('../../img/dust_texture.jpg');
     position: fixed;
     top: 0;
     left: 0;
     z-index: 999;
     width: 100%;
-    height: 23px;
+    height: 50px;
     
     color: white;
 }
