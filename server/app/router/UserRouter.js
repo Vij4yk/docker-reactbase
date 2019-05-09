@@ -2,8 +2,8 @@ import express from 'express'
 import fs from 'fs'
 import path from 'path'
 import multer from 'multer'
-import jwt from 'jsonwebtoken'
 
+import jwt from '../service/jwt'
 import UserService from '../service/UserService'
 import Log from '../service/Log'
 import Validation from '../service/Validation'
@@ -194,7 +194,7 @@ const signin = (req, res) => {
                     create_at: user.create_at,
                     description: user.description,
                     avatar: `http://${req.get('Host')}/api/u/${user.unique_name_tag}/avatar`
-                }, jwtSecret)
+                })
                 res.json(token)
             }
         } else {
