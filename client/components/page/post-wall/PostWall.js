@@ -3,12 +3,15 @@ import React from 'react'
 import PostBox from './PostBox'
 
 export default class PostWall extends React.Component {
-    constructor(props) {
-        super(props)
+    constructor(propost) {
+        super(propost)
 
         this.state = {
             posts: [],
             uid: 1,
+            fetchStart: 0,
+            fetchNum: 5,
+            canFetch: true
         }
 
         this.onScroll = this.onScroll.bind(this)
@@ -32,34 +35,45 @@ export default class PostWall extends React.Component {
 
     // should fetch from backend
     fetchPosts() {
-        this.setState({
-            posts: [...this.state.posts,
-                {
-                    postId: this.state.uid,
+        if (!this.state.canFetch) {
+            return
+        }
+
+        fetch(`${document.URL}api/p?start=${this.state.fetchStart}&num=${this.state.fetchNum}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                this.setState({canFetch: false})
+                console.log(data.error)
+                return
+            }
+
+            this.setState({fetchStart: data.start})
+            
+            const newPosts = []
+            data.posts.forEach((post, i) => {
+                const utc = new Date(post.create_at)
+
+                newPosts.push({
+                    postId: this.state.uid + i,
                     user: {
-                        uniqueId: 'admin',
-                        name: 'Liang Wu',
-                        avatar: null,
+                        uniqueId: post.unique_name_tag,
+                        name: post.display_name,
+                        avatar: post.avatar,
                     },
-                    date: Date.parse('04 Dec 1995 00:12:00 GMT'),
-                    post: 'test post',
-                    likes: 0,
-                    comments: 0,
-                },
-                {
-                    postId: this.state.uid + 1,
-                    user: {
-                        uniqueId: 'admin',
-                        name: 'Liang Wu',
-                        avatar: "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                    },
-                    date: Date.parse('04 Dec 1995 00:12:00 GMT'),
-                    post: 'test post',
-                    likes: 0,
-                    comments: 0,
-                } 
-            ],
-            uid: this.state.uid + 2,
+                    date: new Date(utc.getTime() - utc.getTimezoneOffset() * 60000),
+                    post: post.message,
+                    likes: post.likes,
+                    comments: post.comments,
+                })
+            })
+
+            this.setState({posts: [...this.state.posts, ...newPosts]})
+            this.setState({uid: this.state.uid + data.posts.length})
+        })
+        .catch(err => {
+            this.setState({canFetch: false})
+            console.log(err)
         })
     }
 
